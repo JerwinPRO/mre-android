@@ -5,11 +5,22 @@
 	<meta name="format-detection" content="telephone-no">
 	<meta name="viewport" content="user-scalable=no, initial-scale=1, minimum-scale=1, maximum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi">
 	<title>Mine Risk Education</title>
+	<link rel="stylesheet" href="css/themes/default/jquery.mobile-1.2.0.css">
 	<link rel="stylesheet" href="css/main.css">
 	<script src="js/jquery.js"></script>
 	<script src="js/jquery.mobile-1.2.0.js"></script>
 	<script src="cordova.android.js"></script>
+	<script src="js/mustache.js"></script>
 	<script>
+		var reportdata = {reporttitle:"", reportdetail:"", imagesource:"", reportlat:"", reportlon:""};
+		var reporttemplate = '<input type="text" name="reporttitle" id="reporttitle" value="{{reporttitle}}" placeholder="Report Title"/><textarea cols="40" rows="8" name="reportdetail" id="reportdetail" placeholder="Report Detail">{{reportdetail}}</textarea><input id="addphoto" type="button" data-icon="plus" value="Add a Photo" /><img id="reportimage" src="{{imagesource}}" /><div id="map">Loading Map..</div><input id="savereport" type="button" data-theme="a" value="Save Report" />';
+		$(document).on("pageinit", function(){
+			$("#newreport").live("pagecreate", function(){
+				var html = Mustache.to_html(reporttemplate, reportdata);
+				$("#reportdetailcontent").html(html);
+			});
+		});
+
 		function init() {
 			document.addEventListener("deviceready", onDeviceReady, false);
 		}
