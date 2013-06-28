@@ -26,7 +26,11 @@
 		}
 
 		function onDeviceReady() {
-			alert('It works!');
+			var networkstate = navigator.connection.type;
+			if(networkstate == "none")
+			{
+				$(".offline").css("visibility","visible");
+			}
 		}
 	</script>
 </head>
