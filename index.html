@@ -16,6 +16,7 @@
 	<script>
 		var reportdata = {reporttitle:"", reportdetail:"", imagesource:"", reportlat:"", reportlon:""};
 		var reporttemplate = '<input type="text" name="reporttitle" id="reporttitle" value="{{reporttitle}}" placeholder="Report Title"/><textarea cols="40" rows="8" name="reportdetail" id="reportdetail" placeholder="Report Detail">{{reportdetail}}</textarea><input id="addphoto" type="button" data-icon="plus" value="Add a Photo" /><img id="reportimage" src="{{imagesource}}" /><div id="map">Loading Map..</div><input id="savereport" type="button" data-theme="a" value="Save Report" />';
+
 		$(document).on("pageinit", function(){
 			$("#newreport").live("pagecreate", function(){
 				var html = Mustache.to_html(reporttemplate, reportdata);
@@ -23,6 +24,10 @@
 			});
 			$("#newreport").live("pageshow", function(){
 				navigator.geolocation.getCurrentPosition(onGeoSuccess, onGeoError);
+			});
+			$("#addphoto").bind("tap", function(){
+				var options = {sourceType:Camera.PictureSourceType.PHOTOLIBRARY, destinationType: Camera.DestinationType.FILE_URI};
+                navigator.camera.getPicture(onCameraSuccess, onError, options);
 			});
 		});
 
@@ -58,9 +63,18 @@
 			});
 		}
 
+		function onCameraSuccess(imageURI) {
+            $("#reportimage").attr("src", imageURI);
+          	$("#reportimage").css("display","block");
+        }
+
 		function onGeoError(error) {
 				alert('Please turn on Geolocation services.');
-			}
+		}
+
+		function onError(message) {
+                alert(message);
+        }
 
 	</script>
 </head>
