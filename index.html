@@ -11,6 +11,8 @@
 	<script src="js/jquery.mobile-1.2.0.js"></script>
 	<script src="cordova.android.js"></script>
 	<script src="js/mustache.js"></script>
+	<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
+	<link href="http://code.google.com/apis/maps/documentation/javascript/examples/default.css" rel="stylesheet" type="text/css" />
 	<script>
 		var reportdata = {reporttitle:"", reportdetail:"", imagesource:"", reportlat:"", reportlon:""};
 		var reporttemplate = '<input type="text" name="reporttitle" id="reporttitle" value="{{reporttitle}}" placeholder="Report Title"/><textarea cols="40" rows="8" name="reportdetail" id="reportdetail" placeholder="Report Detail">{{reportdetail}}</textarea><input id="addphoto" type="button" data-icon="plus" value="Add a Photo" /><img id="reportimage" src="{{imagesource}}" /><div id="map">Loading Map..</div><input id="savereport" type="button" data-theme="a" value="Save Report" />';
@@ -18,6 +20,9 @@
 			$("#newreport").live("pagecreate", function(){
 				var html = Mustache.to_html(reporttemplate, reportdata);
 				$("#reportdetailcontent").html(html);
+			});
+			$("#newreport").live("pageshow", function(){
+				navigator.geolocation.getCurrentPosition(onGeoSuccess, onGeoError);
 			});
 		});
 
@@ -32,6 +37,31 @@
 				$(".offline").css("visibility","visible");
 			}
 		}
+
+		function onGeoSuccess(position) {
+			lat = position.coords.latitude;
+			lon = position.coords.longitude;
+			var currentposition = new google.maps.LatLng(lat,lon);
+			
+			var mapoptions = {
+				zoom: 10,
+				center: currentposition,
+				mapTypeId: google.maps.MapTypeId.ROADMAP
+			};
+			
+			var map = new google.maps.Map(document.getElementById("map"), mapoptions);
+			
+
+			var marker = new google.maps.Marker({
+					position: currentposition,
+					map: map
+			});
+		}
+
+		function onGeoError(error) {
+				alert('Please turn on Geolocation services.');
+			}
+
 	</script>
 </head>
 <body>
